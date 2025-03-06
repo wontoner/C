@@ -1,0 +1,138 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+#define ElemType int
+typedef struct LinkList {
+    int data;
+    struct LinkList *next;
+} ptrL;
+
+LinkList *createLinkList(int n) {
+    LinkList *head = (LinkList *)malloc(sizeof(LinkList));
+    if(head == NULL) {
+        return NULL;
+    }
+    head->next = NULL;
+    LinkList *p = head;
+    if(n <= 0) {
+        return head;
+    }
+    for (int i = 0; i < n; i++) {
+        LinkList *node = (LinkList *)malloc(sizeof(LinkList));
+        node->data = i;
+        node->next = NULL;
+        p->next = node;
+        p = node;
+    }
+    return head;
+}
+LinkList findIndex ( LinkList  ptrL,  int index ){//作业1
+    if(index <= 0) {
+        printf("index feifa\n");
+        exit(0);
+    }
+    LinkList *p = &ptrL;
+    int i = 0;
+    while(p != NULL && i < index) {
+        p = p->next;
+        i++;
+    }
+    if(p == NULL) {
+        printf("FindIndex Not found\n");
+        exit(0);
+    }
+    return *p;
+}
+void printList ( LinkList ptrL,  int index ){//作业2
+    if(index <= 0) {
+        printf("index feifa\n");
+        exit(0);
+    }
+    LinkList *p = &ptrL;
+    int i = 0;
+    while(p != NULL) {
+        if(i < index){
+            p = p -> next;
+        i++;
+        continue;
+        }
+        printf("%d\n", p->data);
+        p = p->next;
+    }
+}
+LinkList insertIndex ( LinkList ptrL,  int index,  ElemType X ){//作业3
+    int i = 0;
+    LinkList *p = &ptrL;
+    if(index < 0) {
+        printf("index feifa\n");
+        exit(0);
+    }else if(index == 0) {
+        LinkList *n = (LinkList *)malloc(sizeof(LinkList));
+        n->data = X;
+        n->next = p;
+        return ptrL;
+    }
+    while(p != NULL && i < index - 1) {
+        p = p -> next;
+        i++;
+        }
+    LinkList *n = (LinkList *)malloc(sizeof(LinkList));
+    if(n == NULL) {
+        printf("error\n");
+        exit(0);
+    }
+    n->data = X;
+    n->next = p->next;
+    p->next = n;
+    if(n == NULL) {
+        printf("error\n");
+        exit(0);
+    }
+    return ptrL;
+}
+LinkList deleteIndex ( LinkList ptrL,  int index ){//作业4
+    int i = 0;
+    LinkList *p = &ptrL;
+    if(index <= 0) {
+        printf("index feifa\n");
+        exit(0);
+    }
+    if(index == 1){
+        LinkList *n = p;
+        p = p -> next;
+        free(n);
+        return ptrL;
+    }
+    while(p != NULL && i < index - 1) {
+        p = p -> next;
+        i++;
+    }
+    if(p == NULL || p -> next == NULL) {
+        printf("error\n");
+        exit(0);
+    }
+    p -> next = p -> next -> next;
+    free(p->next);
+    return ptrL;
+}
+void destroyList ( LinkList ptrL ){//作业5
+    LinkList *p = ptrL.next;
+    while(p != NULL) {
+        LinkList *n = p;
+        p = p -> next;
+        free(n);
+    }
+    ptrL.next = NULL;
+}
+int main() {
+    LinkList *head = createLinkList(10);
+    LinkList *p = head->next;
+    while(p != NULL) {
+        printf("%d\n", p->data);
+        p = p->next;
+    }
+    printf("%d\n", findIndex(*head, 10).data);
+    printList(*head, 5);
+    printf("%d\n", findIndex(insertIndex(*head, 10, 100), 11).data);
+    return 0;
+}
